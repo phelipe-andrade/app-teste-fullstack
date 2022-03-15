@@ -14,12 +14,12 @@ const UserPhotoPost = () => {
   const deadline = useForm('date');
   const { data, error, loading, request } = useFetch();
   const navigate = useNavigate();
-
+  const [nav, setNav] = React.useState(false);
   React.useEffect(() => {
-    if (data) navigate('/conta');
-  }, [data, navigate]);
+    if (nav) navigate('/conta');
+  }, [nav, data, navigate]);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const body = {
       description: description.value,
@@ -27,9 +27,9 @@ const UserPhotoPost = () => {
     };
 
     const token = window.localStorage.getItem('token');
-    const { url, options } = ITEM_POST(body, token);
-    console.log(url, options);
-    request(url, options);
+    const res = ITEM_POST(body, token);
+    await request(res.url, res.options);
+    setNav(true);
   }
 
   return (

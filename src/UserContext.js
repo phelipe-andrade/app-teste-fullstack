@@ -9,6 +9,7 @@ export const UserStorage = ({ children }) => {
   const [login, setLogin] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
+  const [tokenR, setTokenR] = React.useState(null);
   const navigate = useNavigate();
 
   const userLogout = React.useCallback(
@@ -27,7 +28,7 @@ export const UserStorage = ({ children }) => {
     const { url, options } = USER_GET(token);
     const response = await fetch(url, options);
     const json = await response.json();
-    setData(json);
+    setData(json.items);
     setLogin(true);
   }
 
@@ -40,6 +41,7 @@ export const UserStorage = ({ children }) => {
       if (!tokenRes.ok) throw new Error(`Error: ${tokenRes.statusText}`);
       const token = await tokenRes.json();
       window.localStorage.setItem('token', token.token);
+      setTokenR(token.token);
       await getUser(token.token);
       navigate('/conta');
     } catch (err) {
@@ -75,7 +77,7 @@ export const UserStorage = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ userLogin, userLogout, data, error, loading, login }}
+      value={{ userLogin, userLogout, data, error, loading, login, tokenR }}
     >
       {children}
     </UserContext.Provider>
